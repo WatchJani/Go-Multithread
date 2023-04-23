@@ -33,16 +33,26 @@ func Get(c chan int) {
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
-	c := make(chan int)
+	c, counter := make(chan int), 0
 
 	go Put(c)
 	go Put(c)
-	go Get(c)
+	// go Get(c)
 
-	//ako bi to uradili u main, funkcija bi cekala da joj se posalje neki drugi
-	//chanel element, i nikad se ne bi zavrsila, dok kada to uradimo sa go rutin
-	//to je druga nit, ona moze ostati blokirana do kraja programa, cekace sve
-	//dok joj neko ne posalje neku novu vrijednost
+	//ako zelimo da ne zablokiramo glavnu nit, koristimo select
+	//kako bi izasli iz beskonacne petlje koristimo counter, kad su u pitanju unbufered chanel
+
+	for {
+		select {
+		case b := <-c:
+			fmt.Println(b)
+		}
+		counter++
+		fmt.Println("counter:", counter)
+		if counter == 10 {
+			break
+		}
+	}
 
 	time.Sleep(2*time.Second + 100*time.Millisecond)
 	fmt.Println("Sad radi")
