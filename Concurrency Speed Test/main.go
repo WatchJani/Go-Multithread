@@ -8,7 +8,7 @@ import (
 func Read(wg *sync.WaitGroup, winder int) {
 	var counter int = 10
 
-	fmt.Printf("======================== WINER %d ==================", winder)
+	fmt.Printf("======================== WINNER %d ==================", winder)
 
 	for index := 0; index < counter; index++ {
 		fmt.Println(index)
